@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💸 Zerks 💸</title>
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/88819188?v=4">
+  <style>
+    @import 'https://fonts.googleapis.com/css?family=Roboto+Mono:100&display=swap';
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background: url('https://i.ibb.co/KGC073F/tes-1.png') no-repeat center center fixed; 
+      background-size: cover; 
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      color: #fafafa;
+      position: relative;
+    }
+
+    /* Blurry screen overlay before entry */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(5px);
+    }
+
+    .overlay .enter-button {
+      font-size: 24px;
+      color: white;
+      background-color: #333;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: transform 0.3s ease;
+    }
+
+    .overlay .enter-button:hover {
+      transform: scale(1.1);
+    }
+
+    /* Main content container */
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .text {
+      font-weight: 100;
+      font-size: 32px;
+      color: #fafafa;
+      filter: drop-shadow(0px 0px 9px #ffffff);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .social-button {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      outline: none;
+      background-color: white;
+      transition: transform 0.3s ease;
+      margin: 0 10px;
+    }
+
+    .social-button:hover {
+      transform: scale(1.3);
+    }
+
+    /* Spotify Button */
+    .spotify-button {
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg');
+      background-size: cover;
+    }
+
+    /* Instagram Button */
+    .instagram-button {
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Instagram_logo_2022.svg/600px-Instagram_logo_2022.svg.png');
+      background-size: cover;
+    }
+
+    /* SoundCloud Button */
+    .soundcloud-button {
+      background-image: url('https://www.pngall.com/wp-content/uploads/13/Soundcloud-Logo.png');
+      background-size: cover;
+    }
+
+    /* Discord Button */
+    .discord-button {
+      background-image: url('https://logodownload.org/wp-content/uploads/2017/11/discord-logo-1-1.png');
+      background-size: cover;
+    }
+
+    /* Volume icon */
+    .volume-icon {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 32px;
+      cursor: pointer;
+      z-index: 10000;
+      color: white;
+    }
+
+    .volume-icon.muted {
+      color: #ff0000;
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- Blurry Overlay Screen -->
+  <div class="overlay" id="overlay">
+    <button class="enter-button" onclick="enterSite()">beware...</button>
+  </div>
+
+  <!-- Main content -->
+  <div class="container" id="main-content">
+    <div class="text" id="scramble-text">
+      <span class="dud">_</span><span class="dud">@</span>th<span class="dud">\</span>b.c<span class="dud">]</span>m<span class="dud">{</span>C<span class="dud">^</span>p<span class="dud">&gt;</span><span class="dud">\</span>r<span class="dud">\</span><span class="dud">^</span>F
+    </div>
+
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+      <button class="social-button spotify-button" id="spotify-button" onclick="handleButtonClick(event, 'spotify')"></button>
+      <button class="social-button instagram-button" id="instagram-button" onclick="handleButtonClick(event, 'instagram')"></button>
+      <button class="social-button soundcloud-button" id="soundcloud-button" onclick="handleButtonClick(event, 'soundcloud')"></button>
+      <button class="social-button discord-button" id="discord-button" onclick="handleButtonClick(event, 'discord')"></button>
+    </div>
+  </div>
+
+  <!-- Volume icon (mute/unmute) -->
+  <div class="volume-icon" id="volume-icon" onclick="toggleMute()">🔊</div>
+
+  <script>
+    // Text Scramble Class
+    class TextScramble {
+      constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\\/[]{}@€”=+*^?#________';
+        this.update = this.update.bind(this);
+      }
+
+      setText(newText) {
+        const oldText = this.el.innerText;
+        const length = Math.max(oldText.length, newText.length);
+        const promise = new Promise(resolve => this.resolve = resolve);
+        this.queue = [];
+
+        for (let i = 0; i < length; i++) {
+          const from = oldText[i] || '';
+          const to = newText[i] || '';
+          const start = Math.floor(Math.random() * 40);
+          const end = start + Math.floor(Math.random() * 40);
+          this.queue.push({ from, to, start, end });
+        }
+
+        cancelAnimationFrame(this.frameRequest);
+        this.frame = 0;
+        this.update();
+        return promise;
+      }
+
+      update() {
+        let output = '';
+        let complete = 0;
+
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+          const { from, to, start, end, char } = this.queue[i];
+
+          if (this.frame >= end) {
+            complete++;
+            output += to;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              this.queue[i].char = this.randomChar();
+            }
+            output += `<span class="dud">${this.queue[i].char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+
+        this.el.innerHTML = output;
+
+        if (complete === this.queue.length) {
+          this.resolve();
+        } else {
+          this.frameRequest = requestAnimationFrame(this.update);
+          this.frame++;
+        }
+      }
+
+      randomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      }
+    }
+
+    // Initialize the text scramble effect
+    const phrases = ["💸 Zerks 💸", "Real Nigga", "💸💸💸"];
+    const el = document.querySelector('#scramble-text');
+    const fx = new TextScramble(el);
+
+    let counter = 0;
+    const next = () => {
+      fx.setText(phrases[counter]).then(() => {
+        setTimeout(next, 800);
+      });
+      counter = (counter + 1) % phrases.length;
+    };
+
+    next();
+
+    // Enter the site and remove overlay
+    function enterSite() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('main-content').style.opacity = 1;
+    }
+
+    // Handle button clicks
+    function handleButtonClick(event, platform) {
+      let url;
+      if (platform === 'spotify') {
+        url = 'https://open.spotify.com/user/31acycjlegfjtvc2lfdetkqlwjsa?si=afd0f0f6ba834dfb';
+      } else if (platform === 'instagram') {
+        url = 'https://www.instagram.com/j.c.zerks/';
+      } else if (platform === 'soundcloud') {
+        url = 'https://soundcloud.com/zerksxd';
+      } else if (platform === 'discord') {
+        url = 'https://discord.gg/jz3q8Bs6hV';
+      }
+      window.open(url, '_blank');
+    }
+
+    // Toggle mute/unmute
+    let isMuted = false;
+    function toggleMute() {
+      isMuted = !isMuted;
+      if (isMuted) {
+        document.getElementById('volume-icon').classList.add('muted');
+        document.getElementById('volume-icon').textContent = '🔇';
+      } else {
+        document.getElementById('volume-icon').classList.remove('muted');
+        document.getElementById('volume-icon').textContent = '🔊';
+      }
+    }
+  </script>
+</body>
+</html>
