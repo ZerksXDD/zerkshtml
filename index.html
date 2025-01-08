@@ -19,7 +19,6 @@
       position: relative;
     }
 
-    /* Blurry screen overlay before entry */
     .overlay {
       position: fixed;
       top: 0;
@@ -49,7 +48,6 @@
       transform: scale(1.1);
     }
 
-    /* Main content container */
     .container {
       display: flex;
       justify-content: center;
@@ -85,31 +83,26 @@
       transform: scale(1.3);
     }
 
-    /* Spotify Button */
     .spotify-button {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg');
       background-size: cover;
     }
 
-    /* Instagram Button */
     .instagram-button {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Instagram_logo_2022.svg/600px-Instagram_logo_2022.svg.png');
       background-size: cover;
     }
 
-    /* SoundCloud Button */
     .soundcloud-button {
       background-image: url('https://www.pngall.com/wp-content/uploads/13/Soundcloud-Logo.png');
       background-size: cover;
     }
 
-    /* Discord Button */
     .discord-button {
       background-image: url('https://logodownload.org/wp-content/uploads/2017/11/discord-logo-1-1.png');
       background-size: cover;
     }
 
-    /* Volume icon */
     .volume-icon {
       position: fixed;
       top: 20px;
@@ -128,12 +121,10 @@
 </head>
 
 <body>
-  <!-- Blurry Overlay Screen -->
   <div class="overlay" id="overlay">
     <button class="enter-button" onclick="enterSite()">beware...</button>
   </div>
 
-  <!-- Main content -->
   <div class="container" id="main-content">
     <div class="text" id="scramble-text">
       <span class="dud">_</span><span class="dud">@</span>th<span class="dud">\</span>b.c<span class="dud">]</span>m<span class="dud">{</span>C<span class="dud">^</span>p<span class="dud">&gt;</span><span class="dud">\</span>r<span class="dud">\</span><span class="dud">^</span>F
@@ -147,11 +138,14 @@
     </div>
   </div>
 
-  <!-- Volume icon (mute/unmute) -->
   <div class="volume-icon" id="volume-icon" onclick="toggleMute()">🔊</div>
 
+  <audio id="background-audio" loop>
+    <source src="https://www.dropbox.com/scl/fi/cffcb7bri94fq5y9oxm9s/Drugs_Hoes_Money_Etc..mp3?rlkey=vaf6rjd95mc4ssertwwjssfee&st=91p2gz5z&dl=1" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
   <script>
-    // Text Scramble Class
     class TextScramble {
       constructor(el) {
         this.el = el;
@@ -214,7 +208,6 @@
       }
     }
 
-    // Initialize the text scramble effect
     const phrases = ["💸 Zerks 💸", "Real Nigga", "💸💸💸"];
     const el = document.querySelector('#scramble-text');
     const fx = new TextScramble(el);
@@ -229,13 +222,14 @@
 
     next();
 
-    // Enter the site and remove overlay
     function enterSite() {
       document.getElementById('overlay').style.display = 'none';
       document.getElementById('main-content').style.opacity = 1;
+
+      const audio = document.getElementById('background-audio');
+      audio.play();
     }
 
-    // Handle button clicks
     function handleButtonClick(event, platform) {
       let url;
       if (platform === 'spotify') {
@@ -250,16 +244,18 @@
       window.open(url, '_blank');
     }
 
-    // Toggle mute/unmute
     let isMuted = false;
     function toggleMute() {
       isMuted = !isMuted;
+      const audio = document.getElementById('background-audio');
       if (isMuted) {
         document.getElementById('volume-icon').classList.add('muted');
         document.getElementById('volume-icon').textContent = '🔇';
+        audio.muted = true;
       } else {
         document.getElementById('volume-icon').classList.remove('muted');
         document.getElementById('volume-icon').textContent = '🔊';
+        audio.muted = false;
       }
     }
   </script>
