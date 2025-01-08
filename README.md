@@ -19,18 +19,7 @@ Change the text, buttons, and animations, or add your favorite emojis! 😎 It's
 
 ## Social Media Buttons:
   - Update the social media URLs in the handleButtonClick function! 🌍
-javascript
-Copy code
-function handleButtonClick(event, platform) {
-  let url;
-  if (platform === 'spotify') {
-    url = 'https://your-spotify-link.com';
-  } else if (platform === 'instagram') {
-    url = 'https://your-instagram-link.com';
-  }
-  window.open(url, '_blank');
-}
-
+  
 ## Emojis & Icons:
  -Add any emojis to the text or buttons for more fun! 🎉
     You can change the volume icon to any emoji you like. 🔊❌
